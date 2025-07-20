@@ -13,7 +13,7 @@ const awardsData = [
     date: "July 2025",
     description: "Secured 5th place in a 24-hour hackathon centered on the theme of APIs, developing a solution for the 'API Remix' problem statement.",
     icon: <FaAward />,
-    image: "/images/call2code_cert.jpg",
+    image: "/assets/call2code_cert.png",
   },
   {
     title: "2nd Round Trophy",
