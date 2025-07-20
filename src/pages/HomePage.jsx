@@ -124,7 +124,7 @@ export default function HomePage() {
             position: "absolute",
             // *** THIS IS THE CHANGE ***
             // On mobile, it's near the bottom. On desktop, it's below the title.
-            top: screenWidth < 1200 ? "85vh" : "9rem",
+            top: screenWidth < 1200 ? "85%" : "9rem",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 1,
