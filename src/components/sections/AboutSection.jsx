@@ -1,7 +1,6 @@
 import React from 'react';
 import { useScreenWidth } from '../../hooks/useScreenWidth';
 
-// --- Import correct logos from React Icons ---
 import {
   DiReact, DiPython, DiNodejsSmall, DiMongodb, DiDocker, DiUnitySmall
 } from 'react-icons/di';
@@ -11,11 +10,10 @@ import {
 
 import SocialLinksBar from '../SocialLinkBar';
 
-// --- SVG for Download Button (remains the same) ---
+
 const downloadIcon = <svg viewBox="0 0 24 24" fill="currentColor" height="1em" width="1em"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13h-4v4h-2v-4H7l5-5 5 5z"/></svg>;
 
 
-// Updated list with proper icon components
 const skillList = [
   { name: 'React', icon: <DiReact color="#61DAFB" /> },
   { name: 'React Native', icon: <DiReact color="#61DAFB" /> },
@@ -31,13 +29,23 @@ const skillList = [
   { name: 'Docker', icon: <DiDocker color="#2496ED" /> },
 ];
 
-
 const AboutSection = () => {
   const screenWidth = useScreenWidth();
   const isMobile = screenWidth < 900;
 
+  const sectionContainerStyles = {
+    ...styles.sectionContainer,
+    padding: isMobile ? '3rem 1rem' : '4rem 2rem',
+  };
+  
+
+  const columnTitleStyles = {
+    ...styles.columnTitle,
+    fontSize: isMobile ? '1.5rem' : '1.8rem',
+  };
+
   return (
-    <div style={styles.sectionContainer}>
+    <div style={sectionContainerStyles}> 
       <div style={{ ...styles.grid, gridTemplateColumns: isMobile ? '1fr' : '1fr 1.5fr 1fr' }}>
         {/* --- Column 1: Profile --- */}
         <div style={styles.column}>
@@ -51,11 +59,10 @@ const AboutSection = () => {
 
         {/* --- Column 2: Skills --- */}
         <div style={styles.column}>
-          <h2 style={styles.columnTitle}>Skills</h2>
+          <h2 style={columnTitleStyles}>Skills</h2> 
           <div style={styles.skillsGrid}>
             {skillList.map(skill => (
               <div key={skill.name} style={styles.skillTag}>
-                {/* The icon is now rendered directly as a component */}
                 <div style={styles.skillIcon}>{skill.icon}</div>
                 <span style={styles.skillName}>
                   <span style={{ color: '#888', marginRight: '5px' }}>#</span>{skill.name}
@@ -67,7 +74,7 @@ const AboutSection = () => {
 
         {/* --- Column 3: Resume --- */}
         <div style={styles.column}>
-          <h2 style={styles.columnTitle}>My CV</h2>
+          <h2 style={columnTitleStyles}>My CV</h2> 
           <p style={styles.resumeText}>Interested in my work? Feel free to download my resume for a more detailed overview of my experience.</p>
           <a href="/AnkitChetri.pdf" download style={styles.downloadButton}>
             <span style={styles.downloadIcon}>{downloadIcon}</span>
@@ -79,19 +86,16 @@ const AboutSection = () => {
   );
 };
 
-// --- STYLES (No changes here, except skillIcon size) ---
+// --- STYLES ---
 const styles = {
   sectionContainer: {
     minHeight: '50vh',
     width: '100%',
-    padding: '4rem 2rem',
-
     backgroundColor: 'rgba(50, 0, 0, 0.93)',
     backgroundImage: `url('/assets/terracotta-floor.jpg')`, 
-    backgroundSize: 'cover', // Ensures the texture covers the whole section
-    backgroundPosition: 'center', // Centers the texture
-    backgroundBlendMode: 'overlay', // Blends the image with the color
-    
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundBlendMode: 'overlay',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     borderTop: '1px solid rgba(255, 255, 255, 0.1)',
@@ -99,7 +103,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     boxSizing: 'border-box',
-    position: 'relative', // Needed for the pseudo-element if you want a color overlay
+    position: 'relative',
   },
   grid: {
     display: 'grid',
@@ -135,7 +139,6 @@ const styles = {
   },
   columnTitle: {
     margin: '0 0 1.5rem 0',
-    fontSize: '1.8rem',
     color: '#fff',
     borderBottom: '2px solid #39ff14',
     paddingBottom: '0.5rem',
@@ -156,12 +159,11 @@ const styles = {
     transition: 'transform 0.2s, background-color 0.2s',
   },
   skillIcon: {
-    fontSize: '24px', // Slightly larger for better visibility
+    fontSize: '24px',
     marginRight: '10px',
     display: 'flex',
     alignItems: 'center',
     backgroundColor: 'black',
-    // padding: '1%',
     borderRadius: '50%',
   },
   skillName: {
@@ -172,7 +174,6 @@ const styles = {
     fontSize: '1rem',
     lineHeight: 1.6,
     marginBottom: '2rem',
-    maxWidth: '300px'
   },
   downloadButton: {
     display: 'inline-flex',
