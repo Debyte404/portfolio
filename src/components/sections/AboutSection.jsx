@@ -1,6 +1,7 @@
 import React from 'react';
 import { useScreenWidth } from '../../hooks/useScreenWidth';
 
+// --- Import correct logos from React Icons ---
 import {
   DiReact, DiPython, DiNodejsSmall, DiMongodb, DiDocker, DiUnitySmall
 } from 'react-icons/di';
@@ -10,10 +11,11 @@ import {
 
 import SocialLinksBar from '../SocialLinkBar';
 
-
+// --- SVG for Download Button ---
 const downloadIcon = <svg viewBox="0 0 24 24" fill="currentColor" height="1em" width="1em"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13h-4v4h-2v-4H7l5-5 5 5z"/></svg>;
 
 
+// --- Skill List ---
 const skillList = [
   { name: 'React', icon: <DiReact color="#61DAFB" /> },
   { name: 'React Native', icon: <DiReact color="#61DAFB" /> },
@@ -23,32 +25,43 @@ const skillList = [
   { name: 'MongoDB', icon: <DiMongodb color="#4DB33D" /> },
   { name: 'Flutter', icon: <SiFlutter color="#02569B" /> },
   { name: 'Blender', icon: <SiBlender color="#F5792A" /> },
-  { name: 'Pyrogram', icon: <SiTelegram color="#26A5E4" /> }, // Using Telegram for Pyrogram
+  { name: 'Pyrogram', icon: <SiTelegram color="#26A5E4" /> },
   { name: 'Flask', icon: <SiFlask color="#FFFFFF" /> },
   { name: 'Unity 3D', icon: <DiUnitySmall color="#FFFFFF" /> },
   { name: 'Docker', icon: <DiDocker color="#2496ED" /> },
 ];
 
+
 const AboutSection = () => {
   const screenWidth = useScreenWidth();
-  const isMobile = screenWidth < 900;
+  const isMobile = screenWidth < 1100;
+  // A new breakpoint for very narrow screens
+  const isExtraSmall = screenWidth < 380;
 
+  // Dynamic style for the main container
   const sectionContainerStyles = {
     ...styles.sectionContainer,
     padding: isMobile ? '3rem 1rem' : '4rem 2rem',
   };
   
-
+  // Dynamic style for the column titles
   const columnTitleStyles = {
     ...styles.columnTitle,
     fontSize: isMobile ? '1.5rem' : '1.8rem',
+  };
+
+  // --- THE FIX ---
+  // Dynamic style for the columns to reduce padding on the narrowest screens
+  const columnStyles = {
+      ...styles.column,
+      padding: isExtraSmall ? '1.5rem 0.5rem' : '1.5rem',
   };
 
   return (
     <div style={sectionContainerStyles}> 
       <div style={{ ...styles.grid, gridTemplateColumns: isMobile ? '1fr' : '1fr 1.5fr 1fr' }}>
         {/* --- Column 1: Profile --- */}
-        <div style={styles.column}>
+        <div style={columnStyles}>
           <img src="/assets/AN_PHOTO.jpg" alt="Ankit Chetri" style={styles.profilePic} />
           <h3 style={styles.profileName}>Ankit Chetri</h3>
           <h3 style={styles.profileName}>{'<Debyte>'}</h3>
@@ -58,7 +71,7 @@ const AboutSection = () => {
         </div>
 
         {/* --- Column 2: Skills --- */}
-        <div style={styles.column}>
+        <div style={columnStyles}>
           <h2 style={columnTitleStyles}>Skills</h2> 
           <div style={styles.skillsGrid}>
             {skillList.map(skill => (
@@ -73,7 +86,7 @@ const AboutSection = () => {
         </div>
 
         {/* --- Column 3: Resume --- */}
-        <div style={styles.column}>
+        <div style={columnStyles}>
           <h2 style={columnTitleStyles}>My CV</h2> 
           <p style={styles.resumeText}>Interested in my work? Feel free to download my resume for a more detailed overview of my experience.</p>
           <a href="/AnkitChetri.pdf" download style={styles.downloadButton}>
@@ -112,7 +125,7 @@ const styles = {
     maxWidth: '1200px',
   },
   column: {
-    padding: '1.5rem',
+    // padding is now handled dynamically by columnStyles
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
     borderRadius: '15px',
     border: '1px solid rgba(255, 255, 255, 0.1)',
