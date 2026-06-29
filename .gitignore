@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.next/
+artifacts/
+.agents/
+skills-lock.json
+.env
+.env.local
+*.log
