@@ -23,6 +23,7 @@ const splash = readIfExists("components/SplashExperience.jsx");
 const scene = readIfExists("components/MakerScene.jsx");
 const sfx = readIfExists("components/SfxLayer.jsx");
 const interactions = readIfExists("components/PortfolioMotion.jsx");
+const expandableImage = readIfExists("components/ExpandableImage.jsx");
 const projectShowcase = readIfExists("components/ProjectShowcase.jsx");
 const adminDashboard = readIfExists("components/AdminDashboard.jsx");
 const store = readIfExists("lib/portfolio-store.js");
@@ -42,6 +43,7 @@ expect(pkg.dependencies?.next, "Next.js must be installed");
 expect(pkg.dependencies?.gsap, "GSAP must be installed");
 expect(pkg.dependencies?.["@gsap/react"], "@gsap/react must be installed");
 expect(pkg.dependencies?.["@vercel/blob"], "Vercel Blob must be installed for production admin persistence");
+expect(pkg.dependencies?.cropperjs, "Cropper.js must be installed for admin image cropping");
 expect(!String(pkg.scripts?.dev).includes("vite"), "Vite dev script must be removed");
 
 expect(exists("app/layout.jsx"), "App Router layout must exist");
@@ -57,7 +59,7 @@ expect(pageSurface.includes("MakerScene"), "page must include the 3D maker scene
 expect(pageSurface.includes("SfxLayer"), "page must include delegated sound effects");
 
 expect(contentSource.includes("Ankit Chetri"), "portfolio data must include the owner name");
-expect(contentSource.includes("Sebastian Lague"), "portfolio must include Sebastian Lague inspiration");
+expect(contentSource.includes("Sebastian Lague Legacy"), "portfolio must include the Sebastian Lague Legacy inspiration title");
 expect(contentSource.includes("wood carving"), "portfolio must include wood carving");
 expect(contentSource.includes("shaders"), "portfolio must include shaders");
 expect(contentSource.includes("baking"), "portfolio must include baking");
@@ -69,8 +71,21 @@ expect(contentJson.includes('"description": "I '), "project descriptions must sp
 expect(contentJson.includes("tiny universe") || contentJson.includes("lab bench"), "portfolio copy must feel imaginative instead of plain resume-like");
 expect(contentJson.includes('"skillStacks"'), "editable content JSON must include skill stacks");
 expect(contentJson.includes('"subtitle"'), "skill stacks must include visible subtitles");
+expect(contentJson.includes('"rank"'), "certificate proof slots must include rank/subheading metadata");
+expect(contentJson.includes('"details"'), "certificate proof slots must include certificate detail metadata");
+expect(contentJson.includes('"certificateTitle"'), "work experience entries must allow work certificate labels");
+expect(contentJson.includes('"certificateImageCrop"'), "work experience entries must allow cropped work certificate images");
+expect(contentJson.includes('"companyHref"'), "work experience entries must allow optional company website links");
+expect(contentJson.includes('"experience"') && contentJson.includes('"tech"'), "work experience entries must include editable tech tags");
 expect(contentJson.includes('"typography"'), "editable content JSON must include typography controls");
 expect(contentJson.includes('"heroTitle"'), "typography controls must include hero title sizing");
+expect(contentJson.includes('"catified"') && contentJson.includes('"fuwafuwa"') && contentJson.includes('"bring the PRD"'), "contact strip content must include the requested whimsy phrases");
+expect(
+  shell.includes("I build systems with a heart for whimsy") &&
+    shell.includes("Sketchbook with a GPU attached.") &&
+    shell.includes("Bring me something with whimsy."),
+  "public shell copy must use the requested whimsy wording",
+);
 
 expect(splash.includes("WELCOME TO DEBYTE EXPO"), "splash must animate WELCOME TO DEBYTE EXPO");
 expect(splash.includes("/assets/flip-sound.mp3"), "splash must use the old flip sound");
@@ -130,6 +145,13 @@ expect(interactions.includes("ScrollTrigger"), "scroll animation must use Scroll
 expect(interactions.includes("matchMedia"), "GSAP animations must use matchMedia");
 expect(interactions.includes("prefers-reduced-motion"), "GSAP animations must respect reduced motion");
 
+expect(exists("components/ExpandableImage.jsx"), "clickable images must use a reusable expandable image layer");
+expect(expandableImage.includes("createPortal"), "expanded images must render above the page in a portal layer");
+expect(expandableImage.includes("getBoundingClientRect"), "expanded images must grow from the clicked image position");
+expect(expandableImage.includes("requestAnimationFrame"), "expanded images must animate from source position to overlay size");
+expect(expandableImage.includes("Escape"), "expanded images must close from the Escape key");
+expect(expandableImage.includes("data-sfx"), "expanded image triggers must keep sound hooks");
+
 expect(projectShowcase.includes("PAGE_SIZE"), "projects must expose pagination size");
 expect(projectShowcase.includes("aria-current"), "project pagination must mark the current page");
 expect(projectShowcase.includes("onDoubleClick"), "project cards must support a double-click gesture");
@@ -137,6 +159,17 @@ expect(projectShowcase.includes("onPointerMove"), "project cards must support po
 expect(projectShowcase.includes("getPrimaryActionLabel"), "project cards must compute Open vs Source labels from URLs");
 expect(projectShowcase.includes("isGithubUrl"), "GitHub project links must default to Source");
 expect(projectShowcase.includes("imageCrop"), "project cards must apply image crop metadata");
+expect(projectShowcase.includes("ExpandableImage"), "project images must support click-to-expand inspection");
+expect(shell.includes("experience-section"), "work experience must live in its own section");
+expect(shell.includes("certificate-section"), "hackathons/certificates must live in a separate section");
+expect(shell.includes("work-certificate-button"), "work experience cards must expose certificate viewing buttons");
+expect(shell.includes("company-link"), "work experience company names must support optional website links");
+expect(shell.includes("work-tech-tags"), "work experience cards must render tech tags");
+expect(shell.includes("certificate-lip"), "certificate cards must include a subtitle lip below the image");
+expect(!shell.includes("<strong>{certificate.rank}</strong>"), "certificate rank must not render as a second green tag");
+expect(shell.includes("contact-corner-marquee"), "contact finale must include the diagonal animated corner marquee");
+expect(!shell.includes("Certificate slot ready in admin"), "public portfolio must not show admin placeholder text");
+expect(shell.includes("ExpandableImage"), "portfolio images and certificates must support click-to-expand inspection");
 
 expect(exists("app/admin/page.jsx"), "admin dashboard page must exist");
 expect(adminPage.includes("AdminDashboard"), "admin page must render the dashboard");
@@ -151,13 +184,40 @@ expect(uploadRoute.includes("@vercel/blob") && uploadRoute.includes("BLOB_READ_W
 expect(store.includes("portfolio-content.json"), "portfolio store must persist to JSON");
 expect(store.includes("@vercel/blob") && store.includes("allowOverwrite") && store.includes("BLOB_READ_WRITE_TOKEN"), "portfolio store must persist admin edits to Vercel Blob in production");
 expect(store.includes("readBlobText") && store.includes("new Response(stream).text()"), "portfolio store must read Blob streams across Node/Vercel runtimes");
-expect(adminDashboard.includes("Projects") && adminDashboard.includes("Skills") && adminDashboard.includes("Certificates"), "admin dashboard must expose project, skill, and certificate editors");
+expect(store.includes("certificateImageCrop"), "portfolio store must normalize work certificate image crops");
+expect(store.includes("companyHref"), "portfolio store must normalize optional company website links");
+expect(store.includes("tech: withArray"), "portfolio store must normalize work experience tech tags");
+expect(adminDashboard.includes("Projects") && adminDashboard.includes("Skills") && adminDashboard.includes("Experience") && adminDashboard.includes("Certificates"), "admin dashboard must expose project, skill, experience, and certificate editors");
 expect(adminDashboard.includes("Typography"), "admin dashboard must expose typography controls");
 expect(adminDashboard.includes("Font Size"), "admin dashboard must allow font size editing");
 expect(adminDashboard.includes("Raw JSON"), "admin dashboard must include a raw JSON editor for everything else");
 expect(adminDashboard.includes("image URL") || adminDashboard.includes("Image URL"), "admin dashboard must allow image URLs");
 expect(adminDashboard.includes("type=\"file\""), "admin dashboard must allow file uploads");
-expect(adminDashboard.includes("Crop X") && adminDashboard.includes("Crop Y") && adminDashboard.includes("Zoom"), "admin dashboard must expose pan/crop controls");
+expect(adminDashboard.includes("import(\"cropperjs\")"), "admin image editor must load Cropper.js on the client");
+expect(adminDashboard.includes("getCropperSelection") && adminDashboard.includes("$toCanvas"), "admin cropper must export a real cropped canvas");
+expect(adminDashboard.includes("onCroppedImageChange"), "admin cropper must write the cropped/resized asset URL back to content");
+expect(adminDashboard.includes('initial-coverage="1"'), "admin cropper must default the crop selection to the full image");
+expect(adminDashboard.includes("applyFullImageCrop"), "admin cropper must explicitly initialize the selection to the rendered image bounds");
+expect(adminDashboard.includes("clampSelectionToImageBounds"), "admin cropper must clamp selections to image bounds");
+expect(adminDashboard.includes("CROP_SNAP_PX"), "admin cropper must snap selections near image edges/corners");
+expect((adminDashboard.match(/const CROP_SNAP_PX = (\d+)/)?.[1] || 99) <= 12, "admin cropper edge snapping must be gentle enough for precise dragging");
+expect(adminDashboard.includes("limit-boundaries"), "admin cropper selection must use Cropper.js boundary limiting while moving");
+expect(adminDashboard.includes("snap: true"), "admin cropper must snap only when the drag/resize gesture ends");
+expect(adminDashboard.includes("selection.aspectRatio = Number.NaN"), "admin cropper must allow free crop ratios after the full-image reset");
+expect(!adminDashboard.includes("selection.$change(next.x, next.y, next.width, next.height, bounds.aspectRatio)"), "admin cropper must not force every drag back to the full image aspect ratio");
+expect(adminDashboard.includes("getSelectionAspectRatio"), "admin crop export must preserve the selected aspect ratio");
+expect(adminDashboard.includes("naturalAspectRatio"), "admin cropper must size the crop stage from the image aspect ratio");
+expect(adminDashboard.includes("cropperStageStyle"), "admin cropper must pass image aspect ratio into the crop stage");
+expect(adminDashboard.includes("$ready"), "admin cropper must wait for Cropper.js image readiness before sizing the crop world");
+expect(adminDashboard.includes("ResizeObserver"), "admin cropper must recompute bounds when the crop stage resizes");
+expect(!adminDashboard.includes("rotatable scalable skewable translatable"), "admin cropper must not let the image move outside the crop world");
+expect(adminDashboard.includes("SNAP_EDGE_THRESHOLD_LABEL"), "admin cropper UI must communicate edge snapping");
+expect(globals.includes("--cropper-aspect-ratio"), "admin cropper CSS must size the work surface by image aspect ratio");
+expect(adminDashboard.includes("Tech tags, comma separated"), "admin dashboard must edit work experience tech tags");
+expect(adminDashboard.includes("ExperienceEditor"), "admin dashboard must include an experience editor");
+expect(adminDashboard.includes("certificateTitle") && adminDashboard.includes("certificateImageCrop"), "admin dashboard must edit work certificate metadata");
+expect(adminDashboard.includes("companyHref"), "admin dashboard must edit optional company website links");
+expect(adminDashboard.includes("Top green tag"), "admin dashboard must let certificate top lips be edited");
 expect(adminDashboard.includes("moveItem"), "admin dashboard must allow rearranging content");
 
 expect(globals.includes("--acid"), "global CSS must define the acid accent token");
@@ -168,6 +228,24 @@ expect(globals.includes("@media (max-width: 720px)"), "global CSS must include m
 expect(globals.includes("@media (prefers-reduced-motion: reduce)"), "global CSS must include reduced-motion rules");
 expect(globals.includes(".project-grid"), "global CSS must style project pagination grid");
 expect(globals.includes(".stack-subtitle"), "global CSS must style skill stack subtitles");
+expect(globals.includes(".experience-section"), "global CSS must style the standalone work experience section");
+expect(globals.includes(".work-tech-tags"), "global CSS must style work experience tech tags");
+expect(globals.includes(".certificate-section"), "global CSS must style the standalone certificate section");
+expect(/\.work-timeline\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/.test(globals), "work experience cards must stay boxed in a full-width grid");
+expect(/\.certificate-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/.test(globals), "certificate gallery must use the available desktop width efficiently");
+expect(globals.includes(".certificate-lip"), "global CSS must style certificate subtitle lips");
+expect(globals.includes(".contact-corner-marquee") && globals.includes("rotate(-45deg)"), "contact finale must style a 45-degree neon marquee");
+expect(globals.includes("@keyframes contact-corner-slide"), "contact finale must animate the diagonal marquee text");
+expect(globals.includes("width: max(1400px, 128vw)") && globals.includes("right: clamp(-720px, -34vw, -430px)"), "contact diagonal marquee must overscan the viewport so end-caps do not cut off on the right edge");
+expect(!globals.includes("grid-template-columns: minmax(0, 1fr) minmax(260px, auto)"), "contact buttons must stay in the headline flow instead of floating in a separate right column");
+expect(/\.contact-section > div\.contact-actions\s*\{[^}]*justify-self:\s*start/.test(globals), "contact buttons must align with the contact headline");
+expect(/\.contact-section > div\.contact-actions\s*\{[^}]*position:\s*absolute[^}]*bottom:/s.test(globals), "contact buttons must be anchored as a visible bottom-left dock");
+expect(globals.includes(".image-popout-layer") && globals.includes(".image-popout-panel"), "global CSS must style expanded image layers");
+expect(globals.includes(".company-link"), "global CSS must style optional company website links");
+expect(globals.includes(".contact-section") && globals.includes("align-content: start"), "contact section must reveal actions earlier in the scroll");
+expect(globals.includes(".admin-cropper-preview") && globals.includes(".admin-crop-button"), "global CSS must style the Cropper.js admin controls");
+expect(globals.includes("::-webkit-scrollbar"), "global CSS must style Chromium/WebKit scrollbars");
+expect(globals.includes("scrollbar-color"), "global CSS must style Firefox scrollbars");
 expect(globals.includes(".story-card .section-label"), "story card labels must have readable contrast");
 expect(globals.includes(".admin-page"), "global CSS must style the admin dashboard");
 expect(globals.includes("--font-size-hero-title-max"), "global CSS must support editable hero title font sizing");

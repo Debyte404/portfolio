@@ -41,7 +41,7 @@ It is not a static resume page. It has:
   <tr>
     <td width="50%">
       <h3>Portfolio Manager</h3>
-      <p>A hidden admin dashboard for editing projects, skills, certificates, typography, image URLs, uploads, crop position, zoom, and item order.</p>
+      <p>A hidden admin dashboard for editing projects, work experience, certificates, typography, image URLs, uploads, crop position, zoom, and item order.</p>
     </td>
     <td width="50%">
       <h3>Vercel-Ready Storage</h3>
@@ -87,9 +87,11 @@ It lets me maintain the portfolio without touching code:
 - Add, remove, and rearrange projects.
 - Edit project copy, links, tags, accents, source URLs, and images.
 - Upload images or paste image URLs.
-- Pan/crop with `Crop X`, `Crop Y`, and `Zoom`.
+- Pan/crop with drag-to-pan preview controls plus `Crop X`, `Crop Y`, and `Zoom`.
 - Edit skill headings, skill subtitles, and skill items.
-- Manage certificate proof slots.
+- Manage work experience entries and internship/work certificates.
+- Manage certificate proof slots with ranks, subheadings, and details.
+- Click public portfolio images to inspect them in a bounded popout layer.
 - Tune public typography from sliders.
 - Use raw JSON for deeper edits.
 

@@ -18,6 +18,13 @@
       "href": "mailto:ankit.byte.404@gmail.com"
     }
   ],
+  "contactCornerLines": [
+    "catified",
+    "fuwafuwa",
+    "bring the PRD",
+    "whism of whiff with a touch of whimsy",
+    "ship the odd idea"
+  ],
   "makerSignals": [
     "shaders",
     "electronics",
@@ -195,7 +202,7 @@
     },
     {
       "kicker": "Influence",
-      "title": "Sebastian Lague energy",
+      "title": "Sebastian Lague Legacy",
       "body": "I love the Sebastian Lague kind of curiosity: explain the machine, visualize the invisible, make the hard thing playful, then ship the weird prototype before doubt catches up."
     },
     {
@@ -208,25 +215,75 @@
     {
       "role": "Founding Frontend Lead Engineer",
       "org": "NovelPedia - KarmicSphere Media Pvt. Ltd.",
+      "companyHref": "https://novelpedia.com",
       "period": "May 2026 - Present",
-      "body": "I shipped 21+ merged PRs across production reader, author-dashboard, and admin-panel surfaces, the kind of work where polish and patience both matter."
+      "body": "I shipped 21+ merged PRs across production reader, author-dashboard, and admin-panel surfaces, the kind of work where polish and patience both matter.",
+      "tech": [
+        "Next.js",
+        "React",
+        "TailwindCSS",
+        "Django REST",
+        "PostHog"
+      ],
+      "certificate": "",
+      "certificateTitle": "NovelPedia work certificate",
+      "certificateNote": "Official work proof not added yet.",
+      "certificateImageCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      }
     },
     {
       "role": "Junior Software Developer Intern",
       "org": "NovelPedia",
+      "companyHref": "https://novelpedia.com",
       "period": "Jul 2025 - Oct 2025",
-      "body": "I built responsive author-dashboard interfaces with Next.js, TailwindCSS, Django REST APIs, and a lot of practical debugging under real product pressure."
+      "body": "I built responsive author-dashboard interfaces with Next.js, TailwindCSS, Django REST APIs, and a lot of practical debugging under real product pressure.",
+      "tech": [
+        "Next.js",
+        "TailwindCSS",
+        "Django REST",
+        "Author dashboard"
+      ],
+      "certificate": "",
+      "certificateTitle": "NovelPedia internship certificate",
+      "certificateNote": "Internship certificate not added yet.",
+      "certificateImageCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      }
     },
     {
       "role": "Software Development Intern",
       "org": "Paint Your Story",
+      "companyHref": "",
       "period": "Mar 2025 - Jun 2025",
-      "body": "I developed MongoDB-backed MERN and Flask modules for auth, payment, email workflows, third-party services, and APIs that had to connect cleanly."
+      "body": "I developed MongoDB-backed MERN and Flask modules for auth, payment, email workflows, third-party services, and APIs that had to connect cleanly.",
+      "tech": [
+        "MongoDB",
+        "MERN",
+        "Flask",
+        "Payments",
+        "REST APIs"
+      ],
+      "certificate": "",
+      "certificateTitle": "Paint Your Story internship certificate",
+      "certificateNote": "Internship certificate not added yet.",
+      "certificateImageCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      }
     }
   ],
   "certificates": [
     {
       "title": "The Fest 3.0 Hackathon",
+      "subtitle": "The Fest 3.0 result sheet",
+      "rank": "Rank: First place",
+      "details": "First place with Kasukabe Defence Group.",
       "note": "Reserved proof frame",
       "image": "",
       "imageCrop": {
@@ -237,6 +294,9 @@
     },
     {
       "title": "Neurathon",
+      "subtitle": "Certificate of participation",
+      "rank": "Recognition: challenge sprint",
+      "details": "Participation proof from Neurathon 2026.",
       "note": "Reserved proof frame",
       "image": "/uploads/1782759440833-787595f5-e837-49f2-af25-260febbcaed2.jpg",
       "imageCrop": {
@@ -247,6 +307,9 @@
     },
     {
       "title": "CALL2CODE Hackathon",
+      "subtitle": "IEEE student branch proof",
+      "rank": "Rank: Finalist",
+      "details": "Finalist certificate from CALL2CODE by IEEE Student Branch MUJ.",
       "note": "Existing certificate asset",
       "image": "/assets/call2code_cert.png",
       "imageCrop": {

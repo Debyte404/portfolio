@@ -9,6 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import MakerScene from "./MakerScene";
 import MakerStickers from "./MakerStickers";
+import ExpandableImage from "./ExpandableImage";
 import PortfolioMotion from "./PortfolioMotion";
 import ProjectShowcase from "./ProjectShowcase";
 import SfxLayer from "./SfxLayer";
@@ -35,13 +36,6 @@ function Marquee() {
       </div>
     </div>
   );
-}
-
-function getCropStyle(crop) {
-  return {
-    objectPosition: `${crop?.x ?? 50}% ${crop?.y ?? 50}%`,
-    transform: `scale(${crop?.zoom ?? 1})`,
-  };
 }
 
 function toRem(value, fallback) {
@@ -90,10 +84,31 @@ function SectionLabel({ children }) {
   return <p className="section-label">{children}</p>;
 }
 
+function CompanyMark({ item }) {
+  if (item.companyHref) {
+    return (
+      <a className="company-link" href={item.companyHref} target="_blank" rel="noreferrer" data-sfx="click">
+        {item.org} <ArrowUpRight size={16} weight="bold" />
+      </a>
+    );
+  }
+
+  return <strong>{item.org}</strong>;
+}
+
+const defaultContactCornerLines = [
+  "catified",
+  "fuwafuwa",
+  "bring the PRD",
+  "whism of whiff with a touch of whimsy",
+  "ship the odd idea",
+];
+
 export default function PortfolioPage({ content = defaultContent }) {
   const {
     certificates = [],
     chapters = [],
+    contactCornerLines = defaultContactCornerLines,
     experience = [],
     makerSignals = [],
     metrics = [],
@@ -103,6 +118,8 @@ export default function PortfolioPage({ content = defaultContent }) {
     socialLinks = [],
     typography = {},
   } = content;
+  const finaleLines = Array.isArray(contactCornerLines) && contactCornerLines.length ? contactCornerLines : defaultContactCornerLines;
+  const cornerLoop = [...finaleLines, ...finaleLines, ...finaleLines, ...finaleLines];
 
   return (
     <main style={getTypographyStyle(typography)}>
@@ -120,7 +137,10 @@ export default function PortfolioPage({ content = defaultContent }) {
             Story
           </a>
           <a href="#projects" data-sfx="click">
-            Work
+            Builds
+          </a>
+          <a href="#experience" data-sfx="click">
+            Experience
           </a>
           <a href="#proof" data-sfx="click">
             Proof
@@ -142,14 +162,14 @@ export default function PortfolioPage({ content = defaultContent }) {
             <span className="word">Expo</span>
           </h1>
           <p className="hero-subtitle">
-            I build web apps, bots, games, hardware toys, and 3D scenes like tiny worlds, with a designer's eye and a shader-brained heart.
+            I build systems with a heart for whimsy, with a designer's eye and a shader-brained heart i can make websites, apps and architectures. the world lacks whimsy.
           </p>
           <div className="hero-actions">
             <a className="neo-button" href="#projects" data-sfx="click">
               View builds
             </a>
             <a className="neo-button neo-button-ghost" href={resumeSourceUrl} target="_blank" rel="noreferrer" data-sfx="click">
-              Download CV <ArrowUpRight size={18} weight="bold" />
+              Download Resume <ArrowUpRight size={18} weight="bold" />
             </a>
           </div>
           <SocialRail socialLinks={socialLinks} />
@@ -158,7 +178,12 @@ export default function PortfolioPage({ content = defaultContent }) {
         <div className="hero-stage" data-reveal>
           <MakerScene />
           <div className="profile-poster" data-float>
-            <img src="/assets/profile.jpeg" alt="Edited profile portrait of Ankit Chetri" />
+            <ExpandableImage
+              src="/assets/profile.jpeg"
+              alt="Edited profile portrait of Ankit Chetri"
+              className="profile-poster-image"
+              popoutLabel="Inspect profile portrait"
+            />
             <div>
               <span>phone (2)</span>
               <strong>nothing 2</strong>
@@ -181,7 +206,7 @@ export default function PortfolioPage({ content = defaultContent }) {
       <section className="section story-section" id="story">
         <div className="section-heading" data-reveal>
           <p>Maker lore</p>
-          <h2>Built like a sketchbook with a GPU attached.</h2>
+          <h2>Sketchbook with a GPU attached.</h2>
         </div>
         <div className="story-grid">
           {chapters.map((chapter) => (
@@ -216,47 +241,90 @@ export default function PortfolioPage({ content = defaultContent }) {
         </div>
       </section>
 
-      <section className="section proof-section" id="proof">
-        <div className="proof-copy" data-reveal>
-          <p>Receipts wall</p>
-          <h2>Production, hackathons, and proof slots.</h2>
-          <span>Certificate frames are intentionally reserved where the image source is not ready yet.</span>
+      <section className="section experience-section" id="experience">
+        <div className="experience-copy" data-reveal>
+          <p>Real work</p>
+          <h2>Production gets its own table.</h2>
+          <span>Roles where I shipped interfaces, debugged real product flows, and learned what survives outside the lab.</span>
         </div>
-        <div className="timeline">
+        <div className="timeline work-timeline">
           {experience.map((item) => (
             <article key={`${item.role}-${item.org}`} data-reveal>
               <SectionLabel>{item.period}</SectionLabel>
               <h3>{item.role}</h3>
-              <strong>{item.org}</strong>
+              <CompanyMark item={item} />
               <p>{item.body}</p>
+              {item.tech?.length ? (
+                <div className="work-tech-tags" aria-label={`${item.role} tech stack`}>
+                  {item.tech.map((tag) => (
+                    <span key={`${item.role}-${tag}`}>{tag}</span>
+                  ))}
+                </div>
+              ) : null}
+              {item.certificate ? (
+                <ExpandableImage
+                  src={item.certificate}
+                  alt={item.certificateTitle || `${item.role} certificate`}
+                  className="work-certificate-button"
+                  popoutLabel={`View ${item.certificateTitle || item.role} certificate`}
+                >
+                  <span>{item.certificateTitle || "View certificate"}</span>
+                  <ArrowUpRight size={18} weight="bold" />
+                </ExpandableImage>
+              ) : null}
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="section certificate-section" id="proof">
+        <div className="certificate-copy" data-reveal>
+          <p>Receipts wall</p>
+          <h2>Hackathons, ranks, and proof slots.</h2>
+          <span>Proof cards sized like the actual documents, with the useful context kept close to the image.</span>
         </div>
         <div className="certificate-grid">
           {certificates.map((certificate) => (
             <article key={certificate.title} className="certificate-frame" data-reveal>
               {certificate.image ? (
-                <img
+                <ExpandableImage
                   src={certificate.image}
                   alt={`${certificate.title} certificate`}
                   loading="lazy"
-                  style={getCropStyle(certificate.imageCrop)}
+                  popoutLabel={`Inspect ${certificate.title} certificate`}
                 />
               ) : (
                 <div className="empty-proof">
                   <span>{certificate.note}</span>
                 </div>
               )}
+              {certificate.subtitle ? (
+                <div className="certificate-lip">
+                  <span>{certificate.subtitle}</span>
+                </div>
+              ) : null}
               <h3>{certificate.title}</h3>
+              {certificate.details ? (
+                <div className="certificate-meta">
+                  <span>{certificate.details}</span>
+                </div>
+              ) : null}
             </article>
           ))}
         </div>
       </section>
 
       <section className="contact-section" id="contact">
+        <div className="contact-corner-marquee" aria-hidden="true">
+          <div className="contact-corner-track">
+            {cornerLoop.map((line, index) => (
+              <span key={`${line}-${index}`}>{line}</span>
+            ))}
+          </div>
+        </div>
         <div data-reveal>
-          <p>Final scene</p>
-          <h2>Bring me a strange thing to build.</h2>
+          <p>Contact</p>
+          <h2>Bring me something with whimsy.</h2>
         </div>
         <div className="contact-actions" data-reveal>
           <a className="neo-button" href="mailto:ankit.byte.404@gmail.com" data-sfx="click">

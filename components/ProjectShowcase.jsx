@@ -2,6 +2,7 @@
 
 import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
+import ExpandableImage from "./ExpandableImage";
 
 export const PAGE_SIZE = 3;
 
@@ -67,7 +68,13 @@ function ProjectCard({ project, index }) {
     >
       <div className="project-media">
         {project.image ? (
-          <img src={project.image} alt={project.imageAlt} loading="lazy" style={getImageCropStyle(project.imageCrop)} />
+          <ExpandableImage
+            src={project.image}
+            alt={project.imageAlt}
+            loading="lazy"
+            style={getImageCropStyle(project.imageCrop)}
+            popoutLabel={`Inspect ${project.title} preview`}
+          />
         ) : (
           <div className="project-placeholder" aria-label={project.imageAlt}>
             <span>{String(index + 1).padStart(2, "0")}</span>
