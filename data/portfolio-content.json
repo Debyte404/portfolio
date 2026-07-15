@@ -25,6 +25,17 @@
     "whism of whiff with a touch of whimsy",
     "ship the odd idea"
   ],
+  "heroSubtitle": "I build systems with a heart for whimsy, with a designer's eye and a shader-brained heart i can make websites, apps and architectures. the world lacks whimsy.",
+  "marqueeItems": [
+    "software",
+    "shaders",
+    "hardware",
+    "cinema",
+    "games",
+    "design",
+    "wood",
+    "food"
+  ],
   "makerSignals": [
     "shaders",
     "electronics",

@@ -24,8 +24,9 @@ const iconMap = {
   Mail: EnvelopeSimple,
 };
 
-function Marquee() {
-  const items = ["software", "shaders", "hardware", "cinema", "games", "design", "wood", "food"];
+const defaultMarqueeItems = ["software", "shaders", "hardware", "cinema", "games", "design", "wood", "food"];
+
+function Marquee({ items = defaultMarqueeItems }) {
   const loop = [...items, ...items, ...items, ...items];
 
   return (
@@ -105,12 +106,17 @@ const defaultContactCornerLines = [
   "ship the odd idea",
 ];
 
+const defaultHeroSubtitle =
+  "I build systems with a heart for whimsy, with a designer's eye and a shader-brained heart i can make websites, apps and architectures. the world lacks whimsy.";
+
 export default function PortfolioPage({ content = defaultContent }) {
   const {
     certificates = [],
     chapters = [],
     contactCornerLines = defaultContactCornerLines,
     experience = [],
+    heroSubtitle = defaultHeroSubtitle,
+    marqueeItems = defaultMarqueeItems,
     makerSignals = [],
     metrics = [],
     projects = [],
@@ -164,7 +170,7 @@ export default function PortfolioPage({ content = defaultContent }) {
             <span className="word">Expo</span>
           </h1>
           <p className="hero-subtitle">
-            I build systems with a heart for whimsy, with a designer's eye and a shader-brained heart i can make websites, apps and architectures. the world lacks whimsy.
+            {heroSubtitle}
           </p>
           <div className="hero-actions">
             <a className="neo-button" href="#projects" data-sfx="click">
@@ -194,7 +200,7 @@ export default function PortfolioPage({ content = defaultContent }) {
         </div>
       </section>
 
-      <Marquee />
+      <Marquee items={marqueeItems} />
 
       <section className="metrics-strip" aria-label="Portfolio metrics">
         {metrics.map((metric) => (

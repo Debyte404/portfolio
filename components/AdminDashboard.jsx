@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const tabs = ["Projects", "Skills", "Experience", "Certificates", "Typography", "Raw JSON"];
+const tabs = ["Home", "Projects", "Skills", "Experience", "Certificates", "Typography", "Raw JSON"];
+
+const defaultHeroSubtitle =
+  "I build systems with a heart for whimsy, with a designer's eye and a shader-brained heart i can make websites, apps and architectures. the world lacks whimsy.";
+
+const defaultMarqueeItems = ["software", "shaders", "hardware", "cinema", "games", "design", "wood", "food"];
 
 const defaultTypography = {
   heroTitle: 12.5,
@@ -71,6 +76,17 @@ const blankCertificate = {
   imageCrop: { x: 50, y: 50, zoom: 1 },
 };
 
+const blankMetric = {
+  value: "1",
+  label: "new signal",
+};
+
+const blankChapter = {
+  kicker: "New note",
+  title: "New story card",
+  body: "Write the text for this story section.",
+};
+
 function normalizeCropValue(crop) {
   return {
     x: Number.isFinite(Number(crop?.x)) ? Number(crop.x) : 50,
@@ -82,6 +98,22 @@ function normalizeCropValue(crop) {
 function normalizeContent(content) {
   return {
     ...(content || {}),
+    heroSubtitle: content?.heroSubtitle || defaultHeroSubtitle,
+    marqueeItems: Array.isArray(content?.marqueeItems) ? content.marqueeItems : defaultMarqueeItems,
+    makerSignals: Array.isArray(content?.makerSignals) ? content.makerSignals : [],
+    metrics: Array.isArray(content?.metrics)
+      ? content.metrics.map((metric) => ({
+          value: metric.value || "",
+          label: metric.label || "",
+        }))
+      : [],
+    chapters: Array.isArray(content?.chapters)
+      ? content.chapters.map((chapter) => ({
+          kicker: chapter.kicker || "",
+          title: chapter.title || "",
+          body: chapter.body || "",
+        }))
+      : [],
     projects: Array.isArray(content?.projects)
       ? content.projects.map((project) => ({ ...project, imageCrop: normalizeCropValue(project.imageCrop) }))
       : [],
@@ -354,6 +386,113 @@ function TypographyEditor({ typography, onChange }) {
           ))}
         </div>
       </article>
+    </div>
+  );
+}
+
+function HomeEditor({
+  content,
+  onHeroSubtitleChange,
+  onMarqueeItemsChange,
+  onMakerSignalsChange,
+  onMetricChange,
+  onMetricRemove,
+  onMetricMove,
+  onMetricAdd,
+  onChapterChange,
+  onChapterRemove,
+  onChapterMove,
+  onChapterAdd,
+}) {
+  return (
+    <div className="admin-list">
+      <div className="admin-section-head">
+        <h2>Home</h2>
+        <span>Controls the hero line, metrics strip, and story cards on the public page.</span>
+      </div>
+
+      <article className="admin-panel">
+        <div className="admin-panel-head">
+          <strong>Hero subtitle</strong>
+        </div>
+        <AdminField label="Hero subtitle">
+          <textarea
+            value={content.heroSubtitle || ""}
+            onChange={(event) => onHeroSubtitleChange(event.target.value)}
+            rows={3}
+          />
+        </AdminField>
+      </article>
+
+      <article className="admin-panel">
+        <div className="admin-panel-head">
+          <strong>Word strips</strong>
+        </div>
+        <AdminField label="Scrolling marquee words, comma separated">
+          <input
+            value={listToCsv(content.marqueeItems)}
+            onChange={(event) => onMarqueeItemsChange(csvToList(event.target.value))}
+          />
+        </AdminField>
+        <AdminField label="Story sticker words, comma separated">
+          <input
+            value={listToCsv(content.makerSignals)}
+            onChange={(event) => onMakerSignalsChange(csvToList(event.target.value))}
+          />
+        </AdminField>
+      </article>
+
+      <article className="admin-panel">
+        <div className="admin-panel-head">
+          <strong>Metrics strip</strong>
+          <div className="admin-actions">
+            <button type="button" onClick={onMetricAdd}>Add metric</button>
+          </div>
+        </div>
+        {(content.metrics || []).map((metric, index) => (
+          <div className="admin-grid" key={`metric-${index}`}>
+            <AdminField label={`Metric ${index + 1} value`}>
+              <input value={metric.value || ""} onChange={(event) => onMetricChange(index, { value: event.target.value })} />
+            </AdminField>
+            <AdminField label={`Metric ${index + 1} label`}>
+              <input value={metric.label || ""} onChange={(event) => onMetricChange(index, { label: event.target.value })} />
+            </AdminField>
+            <div className="admin-actions">
+              <button type="button" onClick={() => onMetricMove(index, -1)}>Up</button>
+              <button type="button" onClick={() => onMetricMove(index, 1)}>Down</button>
+              <button type="button" className="admin-danger" onClick={() => onMetricRemove(index)}>Remove</button>
+            </div>
+          </div>
+        ))}
+      </article>
+
+      <div className="admin-section-head">
+        <h2>Story cards</h2>
+        <button type="button" onClick={onChapterAdd}>Add story card</button>
+      </div>
+      {(content.chapters || []).map((chapter, index) => (
+        <article className="admin-panel" key={`chapter-${index}`}>
+          <div className="admin-panel-head">
+            <strong>{String(index + 1).padStart(2, "0")} / {chapter.title || "Story card"}</strong>
+            <div className="admin-actions">
+              <button type="button" onClick={() => onChapterMove(index, -1)}>Up</button>
+              <button type="button" onClick={() => onChapterMove(index, 1)}>Down</button>
+              <button type="button" className="admin-danger" onClick={() => onChapterRemove(index)}>Remove</button>
+            </div>
+          </div>
+          <div className="admin-grid">
+            <AdminField label="Top tag">
+              <input value={chapter.kicker || ""} onChange={(event) => onChapterChange(index, { kicker: event.target.value })} />
+            </AdminField>
+            <AdminField label="Title">
+              <input value={chapter.title || ""} onChange={(event) => onChapterChange(index, { title: event.target.value })} />
+            </AdminField>
+          </div>
+          <AdminField label="Body">
+            <textarea value={chapter.body || ""} onChange={(event) => onChapterChange(index, { body: event.target.value })} rows={4} />
+          </AdminField>
+        </article>
+      ))}
     </div>
   );
 }
@@ -821,7 +960,7 @@ function CertificateEditor({ certificate, index, onChange, onRemove, onMove, onU
 
 export default function AdminDashboard({ initialAuthenticated = false, initialContent }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
-  const [activeTab, setActiveTab] = useState("Projects");
+  const [activeTab, setActiveTab] = useState("Home");
   const [passcode, setPasscode] = useState("");
   const [content, setContent] = useState(() => normalizeContent(initialContent));
   const [rawJson, setRawJson] = useState(() => JSON.stringify(normalizeContent(initialContent), null, 2));
@@ -854,6 +993,26 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
       ...current,
       [section]: current[section].map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item)),
     }));
+  };
+
+  const updateHeroSubtitle = (heroSubtitle) => {
+    replaceContent((current) => ({ ...current, heroSubtitle }));
+  };
+
+  const updateMarqueeItems = (marqueeItems) => {
+    replaceContent((current) => ({ ...current, marqueeItems }));
+  };
+
+  const updateMakerSignals = (makerSignals) => {
+    replaceContent((current) => ({ ...current, makerSignals }));
+  };
+
+  const updateMetric = (index, patch) => {
+    updateListItem("metrics", index, patch);
+  };
+
+  const updateChapter = (index, patch) => {
+    updateListItem("chapters", index, patch);
   };
 
   const addItem = (section, item) => {
@@ -1015,6 +1174,23 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
 
         {message ? <p className="admin-message">{message}</p> : null}
 
+        {activeTab === "Home" ? (
+          <HomeEditor
+            content={content}
+            onHeroSubtitleChange={updateHeroSubtitle}
+            onMarqueeItemsChange={updateMarqueeItems}
+            onMakerSignalsChange={updateMakerSignals}
+            onMetricChange={updateMetric}
+            onMetricRemove={(itemIndex) => removeItem("metrics", itemIndex)}
+            onMetricMove={(itemIndex, direction) => moveItem("metrics", itemIndex, direction)}
+            onMetricAdd={() => addItem("metrics", blankMetric)}
+            onChapterChange={updateChapter}
+            onChapterRemove={(itemIndex) => removeItem("chapters", itemIndex)}
+            onChapterMove={(itemIndex, direction) => moveItem("chapters", itemIndex, direction)}
+            onChapterAdd={() => addItem("chapters", blankChapter)}
+          />
+        ) : null}
+
         {activeTab === "Projects" ? (
           <div className="admin-list">
             <div className="admin-section-head">
@@ -1023,7 +1199,7 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
             </div>
             {content.projects.map((project, index) => (
               <ProjectEditor
-                key={`${project.title}-${index}`}
+                key={`project-${index}`}
                 project={project}
                 index={index}
                 onChange={(itemIndex, patch) => updateListItem("projects", itemIndex, patch)}
@@ -1043,7 +1219,7 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
             </div>
             {content.skillStacks.map((stack, index) => (
               <SkillEditor
-                key={`${stack.title}-${index}`}
+                key={`skill-stack-${index}`}
                 stack={stack}
                 index={index}
                 onChange={(itemIndex, patch) => updateListItem("skillStacks", itemIndex, patch)}
@@ -1062,7 +1238,7 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
             </div>
             {content.experience.map((item, index) => (
               <ExperienceEditor
-                key={`${item.role}-${index}`}
+                key={`experience-${index}`}
                 item={item}
                 index={index}
                 onChange={(itemIndex, patch) => updateListItem("experience", itemIndex, patch)}
@@ -1082,7 +1258,7 @@ export default function AdminDashboard({ initialAuthenticated = false, initialCo
             </div>
             {content.certificates.map((certificate, index) => (
               <CertificateEditor
-                key={`${certificate.title}-${index}`}
+                key={`certificate-${index}`}
                 certificate={certificate}
                 index={index}
                 onChange={(itemIndex, patch) => updateListItem("certificates", itemIndex, patch)}
