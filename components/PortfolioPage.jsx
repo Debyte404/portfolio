@@ -13,6 +13,7 @@ import ExpandableImage from "./ExpandableImage";
 import PortfolioMotion from "./PortfolioMotion";
 import ProjectShowcase from "./ProjectShowcase";
 import SfxLayer from "./SfxLayer";
+import { SoundToggle } from "./SoundPreference";
 import SplashExperience from "./SplashExperience";
 import { portfolioContent as defaultContent } from "../lib/portfolio-data";
 
@@ -149,6 +150,7 @@ export default function PortfolioPage({ content = defaultContent }) {
             Contact
           </a>
         </div>
+        <SoundToggle />
         <a className="nav-resume" href={resumeSourceUrl} target="_blank" rel="noreferrer" data-sfx="click">
           Resume <ArrowUpRight size={16} weight="bold" />
         </a>

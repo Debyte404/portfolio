@@ -2,9 +2,12 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { Howl, Howler } from "howler";
+import { SOUND_CHANGE_EVENT, useSoundPreference } from "./SoundPreference";
 
 export default function SfxLayer() {
   const unlocked = useRef(false);
+  const soundEnabledRef = useRef(false);
+  const { soundEnabled } = useSoundPreference();
   const sounds = useMemo(
     () => ({
       hover: new Howl({
@@ -32,6 +35,10 @@ export default function SfxLayer() {
   );
 
   useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
+
+  useEffect(() => {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -42,6 +49,7 @@ export default function SfxLayer() {
     };
 
     const play = (name) => {
+      if (!soundEnabledRef.current) return;
       if (!unlocked.current) return;
       const sound = sounds[name] || sounds.click;
       if (!sound.playing()) sound.play();
@@ -83,11 +91,26 @@ export default function SfxLayer() {
       play(target.dataset.sfxDbl || "flip");
     };
 
+    const onSoundPreferenceChange = (event) => {
+      if (!(event instanceof CustomEvent) || typeof event.detail?.enabled !== "boolean") return;
+      if (!event.detail.enabled) {
+        soundEnabledRef.current = false;
+        Object.values(sounds).forEach((sound) => sound.stop());
+        return;
+      }
+
+      soundEnabledRef.current = true;
+      unlock();
+      const sound = sounds.click;
+      if (!sound.playing()) sound.play();
+    };
+
     document.addEventListener("pointerenter", onPointerEnter, true);
     document.addEventListener("pointerdown", onPointerDown, true);
     document.addEventListener("pointerup", onPointerUp, true);
     document.addEventListener("click", onClick, true);
     document.addEventListener("dblclick", onDoubleClick, true);
+    window.addEventListener(SOUND_CHANGE_EVENT, onSoundPreferenceChange);
 
     return () => {
       document.removeEventListener("pointerenter", onPointerEnter, true);
@@ -95,6 +118,7 @@ export default function SfxLayer() {
       document.removeEventListener("pointerup", onPointerUp, true);
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("dblclick", onDoubleClick, true);
+      window.removeEventListener(SOUND_CHANGE_EVENT, onSoundPreferenceChange);
       Object.values(sounds).forEach((sound) => sound.unload());
     };
   }, [sounds]);
