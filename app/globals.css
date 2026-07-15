@@ -122,6 +122,7 @@ img {
 
 .image-popout-open {
   overflow: hidden;
+  padding-right: var(--popout-scrollbar-width, 0px);
 }
 
 .image-popout-layer {

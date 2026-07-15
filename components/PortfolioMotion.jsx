@@ -9,6 +9,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function PortfolioMotion() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
+    const refreshScrollTriggers = () => {
+      ScrollTrigger.refresh(true);
+    };
 
     mm.add("(prefers-reduced-motion: reduce)", () => {
       gsap.set("[data-reveal], [data-float]", {
@@ -61,7 +64,12 @@ export default function PortfolioMotion() {
         stagger: 0.12,
       });
 
-      return () => ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      window.addEventListener("portfolio:layout-change", refreshScrollTriggers);
+
+      return () => {
+        window.removeEventListener("portfolio:layout-change", refreshScrollTriggers);
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
     });
 
     return () => mm.revert();

@@ -35,11 +35,15 @@ export default function ExpandableImage({
       if (event.key === "Escape") closePopout();
     };
 
+    const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+
+    document.body.style.setProperty("--popout-scrollbar-width", `${scrollbarWidth}px`);
     document.body.classList.add("image-popout-open");
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
       document.body.classList.remove("image-popout-open");
+      document.body.style.removeProperty("--popout-scrollbar-width");
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [closePopout, popout]);

@@ -241,6 +241,7 @@ expect(!globals.includes("grid-template-columns: minmax(0, 1fr) minmax(260px, au
 expect(/\.contact-section > div\.contact-actions\s*\{[^}]*justify-self:\s*start/.test(globals), "contact buttons must align with the contact headline");
 expect(/\.contact-section > div\.contact-actions\s*\{[^}]*position:\s*absolute[^}]*bottom:/s.test(globals), "contact buttons must be anchored as a visible bottom-left dock");
 expect(globals.includes(".image-popout-layer") && globals.includes(".image-popout-panel"), "global CSS must style expanded image layers");
+expect(globals.includes("--popout-scrollbar-width"), "expanded image scroll lock must reserve the removed scrollbar width so work card titles do not reflow");
 expect(globals.includes(".company-link"), "global CSS must style optional company website links");
 expect(globals.includes(".contact-section") && globals.includes("align-content: start"), "contact section must reveal actions earlier in the scroll");
 expect(globals.includes(".admin-cropper-preview") && globals.includes(".admin-crop-button"), "global CSS must style the Cropper.js admin controls");

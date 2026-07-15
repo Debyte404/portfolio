@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ExpandableImage from "./ExpandableImage";
 
 export const PAGE_SIZE = 3;
@@ -114,6 +114,14 @@ export default function ProjectShowcase({ projects }) {
     () => projects.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE),
     [page, projects],
   );
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("portfolio:layout-change"));
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [page, visible]);
 
   const movePage = (direction) => {
     setPage((current) => (current + direction + pageCount) % pageCount);
